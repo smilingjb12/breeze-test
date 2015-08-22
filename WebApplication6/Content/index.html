@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8"/>
+    <style>
+        li {
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body ng-app="app" ng-controller="AppCtrl">
+<p>Companies:</p>
+<ul>
+    <li ng-repeat="company in companies">
+        <p>Title: <input ng-model="company.Title"/>
+        </p>
+        <p>Size: <input ng-model="company.Size"/>
+        </p>
+        <p>Customers:</p>
+        <ul>
+            <li ng-repeat="customer in company.Customers">
+                <p>Name: <input ng-model="customer.Name"/>
+                </p>
+                <p>Age: <input ng-model="customer.Age"/>
+                </p>
+                <p>Cars:</p>
+                <ul>
+                    <li ng-repeat="car in customer.Cars">
+                        <p>
+                            Make: <input ng-model="car.Make"/>
+                        </p>
+                        <p>
+                            Year: <input ng-model="car.Year"/>
+                        </p>
+                    </li>
+                    <li>
+                        <button ng-click="addCarTo(customer)">Add new car</button>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+<button style="font-size: 20px;" ng-click="save()">Save</button>
+<script src="../Scripts/angular.js"></script>
+    <script src="../Scripts/breeze.min.js"></script>
+<script src="../Scripts/breeze.bridge.angular.js"></script>
+<script>
+    var app = angular.module('app', ['breeze.angular']);
+
+    app.service('entityManager', function(breeze) {
+        //breeze.NamingConvention.camelCase.setAsDefault();
+        var serviceRoot = window.location.protocol + '//' + window.location.host + '/';
+        var serviceName = serviceRoot + 'breeze/Customer';
+        return {
+            newManager: function() {
+                return new breeze.EntityManager(serviceName);
+            },
+            serviceName: serviceName
+        };
+    });
+
+    app.controller('AppCtrl', function ($scope, entityManager, breeze) {
+        $scope.companies = null;
+        var manager = entityManager.newManager();
+        var query = breeze.EntityQuery
+            .from('Companies')
+            .expand('Customers.Cars');
+
+        manager.executeQuery(query)
+            .then(function(data) {
+                $scope.companies = data.results;
+            })
+            .catch(function(error) {
+                alert(error);
+            });
+
+        $scope.save = function() {
+            manager.saveChanges()
+                .then(function() {
+                    alert('saved successfully!');
+                })
+                .catch(function(error) {
+                    alert('error while saving data: ' + error);
+                });
+        };
+
+        $scope.addCarTo = function(customer) {
+            customer.Cars.push({ Make: 'New Car Make', Year: 1111 });
+        };
+    });
+</script>
+</body>
+</html>
