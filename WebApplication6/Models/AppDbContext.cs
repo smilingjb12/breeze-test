@@ -8,6 +8,12 @@ namespace WebApplication6.Models
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext()
+            : base("DefaultConnection")
+        {
+            
+        }
+
         public DbSet<Company> Companies { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Car> Cars { get; set; }

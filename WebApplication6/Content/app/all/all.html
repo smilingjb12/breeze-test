@@ -1,0 +1,48 @@
+﻿<p>
+    <label>Companies:</label>
+</p>
+<button class="btn btn-primary" ng-click="addCompany()">Add new company</button>
+<ol>
+    <li ng-repeat="company in companies">
+        <p>
+            <label>Title:</label>
+            <input ng-model="company.title" class="form-control" />
+        </p>
+        <p>
+            <label>Size:</label> <input ng-model="company.size" class="form-control" />
+        </p>
+        <button class="btn btn-danger" ng-click="removeCompany(company)">Remove this company</button>
+        <p>
+            <label>Customers:</label>
+        </p>
+        <button class="btn btn-primary" ng-click="addCustomerTo(company)">Add new customer</button>
+        <ol>
+            <li ng-repeat="customer in company.customers">
+                <p>
+                    <label>Name:</label> <input ng-model="customer.name" class="form-control" />
+                </p>
+                <p>
+                    <label>Age:</label> <input ng-model="customer.age" class="form-control" />
+                </p>
+                <button class="btn btn-danger" ng-click="removeCustomer(customer)">Remove this customer</button>
+                <p>
+                    <label>Cars:</label>
+                </p>
+                <button class="btn btn-primary" ng-click="addCarTo(customer)">Add new car</button>
+                <ol>
+                    <li ng-repeat="car in customer.cars">
+                        <p>
+                            <label>Make:</label> <input ng-model="car.make" class="form-control" />
+                        </p>
+                        <p>
+                            <label>Year:</label> <input ng-model="car.year" class="form-control" />
+                        </p>
+                        <button class="btn btn-danger" ng-click="removeCar(car)">Remove this car</button>
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </li>
+</ol>
+<hr />
+<button class="btn btn-success btn-block" ng-click="save()">Save</button>

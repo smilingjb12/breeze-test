@@ -9,6 +9,7 @@ using Breeze.ContextProvider.EF6;
 using Breeze.WebApi2;
 using Newtonsoft.Json.Linq;
 using WebApplication6.Models;
+using System.Data.Entity;
 
 namespace WebApplication6.Controllers
 {

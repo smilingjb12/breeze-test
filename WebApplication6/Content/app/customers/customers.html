@@ -1,0 +1,17 @@
+﻿<p>
+    <label>Customers only (without cars):</label>
+</p>
+<ol>
+    <li ng-repeat="customer in customers">
+        <p>
+            <label>Name:</label> <input ng-model="customer.name" class="form-control"/>
+        </p>
+        <p>
+            <label>Age:</label> <input ng-model="customer.age" class="form-control"/>
+        </p>
+        <button class="btn btn-danger" ng-click="removeCustomer(customer)">Remove this customer</button>
+    </li>
+</ol>
+<button class="btn btn-primary" ng-click="addNewCustomer()">Add new customer</button> 
+<hr />
+<button class="btn btn-success btn-block" ng-click="save()">Save</button>

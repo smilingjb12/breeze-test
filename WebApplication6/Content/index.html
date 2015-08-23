@@ -4,92 +4,79 @@
     <title></title>
     <meta charset="utf-8"/>
     <style>
-        li {
-            list-style-type: none;
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+        body {
+            padding-top: 80px;
         }
     </style>
+    <link href="bootstrap.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.10.2.js"></script>
+    <script src="../Scripts/bootstrap.js"></script>
 </head>
-<body ng-app="app" ng-controller="AppCtrl">
-<p>Companies:</p>
-<ul>
-    <li ng-repeat="company in companies">
-        <p>Title: <input ng-model="company.Title"/>
-        </p>
-        <p>Size: <input ng-model="company.Size"/>
-        </p>
-        <p>Customers:</p>
-        <ul>
-            <li ng-repeat="customer in company.Customers">
-                <p>Name: <input ng-model="customer.Name"/>
-                </p>
-                <p>Age: <input ng-model="customer.Age"/>
-                </p>
-                <p>Cars:</p>
-                <ul>
-                    <li ng-repeat="car in customer.Cars">
-                        <p>
-                            Make: <input ng-model="car.Make"/>
-                        </p>
-                        <p>
-                            Year: <input ng-model="car.Year"/>
-                        </p>
-                    </li>
-                    <li>
-                        <button ng-click="addCarTo(customer)">Add new car</button>
-                    </li>
+<body ng-app="app" class="container" ng-cloak>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#/all">Graph Edit Test</a>
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="#/all">Edit All</a></li>
+                    <li><a href="#/customers">Edit Customers Only</a></li>
                 </ul>
-            </li>
-        </ul>
-    </li>
-</ul>
-<button style="font-size: 20px;" ng-click="save()">Save</button>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+<div class="row">
+    <div class="col-md-6 col-md-offset-3">
+        <div ng-view></div>
+    </div>
+</div>
+
 <script src="../Scripts/angular.js"></script>
-    <script src="../Scripts/breeze.min.js"></script>
+<script src="../Scripts/breeze.min.js"></script>
 <script src="../Scripts/breeze.bridge.angular.js"></script>
-<script>
-    var app = angular.module('app', ['breeze.angular']);
+<script src="../Scripts/angular-route.js"></script>
+    <script>
+        var app = angular.module('app', ['breeze.angular', 'ngRoute']);
 
-    app.service('entityManager', function(breeze) {
-        //breeze.NamingConvention.camelCase.setAsDefault();
-        var serviceRoot = window.location.protocol + '//' + window.location.host + '/';
-        var serviceName = serviceRoot + 'breeze/Customer';
-        return {
-            newManager: function() {
-                return new breeze.EntityManager(serviceName);
-            },
-            serviceName: serviceName
-        };
-    });
+        app.service('entityManager', function (breeze) {
+            breeze.NamingConvention.camelCase.setAsDefault();
+            var serviceRoot = window.location.protocol + '//' + window.location.host + '/';
+            var serviceName = serviceRoot + 'breeze/Customer';
+            return {
+                newManager: function () {
+                    return new breeze.EntityManager(serviceName);
+                },
+                serviceName: serviceName
+            };
+        });
 
-    app.controller('AppCtrl', function ($scope, entityManager, breeze) {
-        $scope.companies = null;
-        var manager = entityManager.newManager();
-        var query = breeze.EntityQuery
-            .from('Companies')
-            .expand('Customers.Cars');
-
-        manager.executeQuery(query)
-            .then(function(data) {
-                $scope.companies = data.results;
-            })
-            .catch(function(error) {
-                alert(error);
-            });
-
-        $scope.save = function() {
-            manager.saveChanges()
-                .then(function() {
-                    alert('saved successfully!');
+        app.config(function ($routeProvider) {
+            $routeProvider
+                .when('/all', {
+                    templateUrl: '/Content/app/all/all.html',
+                    controller: 'AllCtrl'
                 })
-                .catch(function(error) {
-                    alert('error while saving data: ' + error);
+                .when('/customers', {
+                    templateUrl: '/Content/app/customers/customers.html',
+                    controller: 'CustomersCtrl'
+                })
+                .otherwise({
+                    redirectTo: '/all'
                 });
-        };
+        });
+    </script>
+<script src="app/all/allCtrl.js"></script>
+<script src="app/customers/customersCtrl.js"></script>
 
-        $scope.addCarTo = function(customer) {
-            customer.Cars.push({ Make: 'New Car Make', Year: 1111 });
-        };
-    });
-</script>
 </body>
 </html>

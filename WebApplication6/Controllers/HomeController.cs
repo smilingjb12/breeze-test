@@ -10,8 +10,6 @@ namespace WebApplication6.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
-
             return View();
         }
     }
